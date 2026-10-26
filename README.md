@@ -7,6 +7,10 @@
 - 空闲时 CPU 为 0：只在本地零点、修改系统时间、睡眠唤醒、解锁时重绘一次
 - 每显示器 DPI 感知（PerMonitorV2），150%/200% 缩放下文字清晰，多屏可用
 
+## 下载
+
+在 [Releases](https://github.com/6app/countdown-days/releases) 页面下载 `CountDay.exe`，双击即可运行。
+
 ## 使用
 
 | 操作 | 方式 |
@@ -37,7 +41,9 @@ cmake --build build --config MinSizeRel
 LLVM_MINGW=/path/to/llvm-mingw sh tools/build_mingw.sh
 ```
 
-产物是 `build-mingw/CountDay.exe`。修改图标的话，执行 `python3 tools/make_icon.py` 重新生成 `res/app.ico`。
+产物是 `build-mingw/CountDay.exe`。
+
+**发布新版本**：推送 `v*` 标签（如 `git tag v1.0.1 && git push origin v1.0.1`），GitHub Actions 会在 Windows 上用 MSVC 编译，然后自动创建 Release 并上传 exe。说明文字取自 `.github/release-notes.md`。修改图标的话，执行 `python3 tools/make_icon.py` 重新生成 `res/app.ico`。
 
 ## 实现要点
 

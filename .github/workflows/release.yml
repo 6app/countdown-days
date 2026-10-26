@@ -1,0 +1,45 @@
+# 推送 v* 标签时：在 Windows 上用 MSVC 编译，并创建 GitHub Release 上传 exe
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Build
+        run: cmake --build build --config MinSizeRel
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item build/MinSizeRel/CountDay.exe dist/CountDay.exe
+          Compress-Archive -Path dist/CountDay.exe -DestinationPath "dist/CountDay-${{ github.ref_name }}-win-x64.zip"
+          Get-ChildItem dist | Format-Table Name, Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CountDay-win-x64
+          path: dist/CountDay.exe
+
+      - name: Create release
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" dist/CountDay.exe "dist/CountDay-${{ github.ref_name }}-win-x64.zip" `
+            --title "倒计日 ${{ github.ref_name }}" `
+            --notes-file .github/release-notes.md

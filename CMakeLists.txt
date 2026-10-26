@@ -20,6 +20,9 @@ add_executable(CountDay WIN32
   res/app.rc
 )
 
+# res/ 让 rc 找到 app.ico 和 app.manifest
+target_include_directories(CountDay PRIVATE src res)
+
 target_compile_definitions(CountDay PRIVATE
   UNICODE _UNICODE WIN32_LEAN_AND_MEAN NOMINMAX
   _WIN32_WINNT=0x0A00 WINVER=0x0A00 NTDDI_VERSION=0x0A000003)
