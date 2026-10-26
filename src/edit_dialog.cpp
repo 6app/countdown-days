@@ -37,11 +37,11 @@ void InitDialog(HWND dlg, const DialogCtx& ctx) {
     SetWindowTextW(dlg, ctx.isNew ? L"新建倒计日" : L"编辑倒计日");
 
     HINSTANCE inst = App_Instance();
-    HICON big = nullptr, small = nullptr;
-    LoadIconMetric(inst, MAKEINTRESOURCEW(IDI_APP), LIM_LARGE, &big);
-    LoadIconMetric(inst, MAKEINTRESOURCEW(IDI_APP), LIM_SMALL, &small);
-    if (big) SendMessageW(dlg, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(big));
-    if (small) SendMessageW(dlg, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(small));
+    HICON iconBig = nullptr, iconSmall = nullptr;
+    LoadIconMetric(inst, MAKEINTRESOURCEW(IDI_APP), LIM_LARGE, &iconBig);
+    LoadIconMetric(inst, MAKEINTRESOURCEW(IDI_APP), LIM_SMALL, &iconSmall);
+    if (iconBig) SendMessageW(dlg, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(iconBig));
+    if (iconSmall) SendMessageW(dlg, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(iconSmall));
 
     SendDlgItemMessageW(dlg, IDC_TITLE, EM_LIMITTEXT, 40, 0);
     SetDlgItemTextW(dlg, IDC_TITLE, d.title.c_str());

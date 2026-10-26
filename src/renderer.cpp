@@ -277,14 +277,14 @@ bool RenderCard(HWND hwnd, const CardData& card, const CountResult& count, int W
 
         // ---- 主体 ----
         const D2D1_RECT_F mainBox = D2D1::RectF(pad, titleBox.bottom, w - pad, footBox.top);
-        const float small = u * 0.12f, big = u * 0.42f;
+        const float smallSize = u * 0.12f, bigSize = u * 0.42f;
         if (count.state == CountState::Future) {
             wchar_t num[32];
             swprintf(num, 32, L"%lld", count.days);
             const Run runs[] = {
-                {L"还有 ", kCjkFont, DWRITE_FONT_WEIGHT_NORMAL, small},
-                {num, kDigitFont, DWRITE_FONT_WEIGHT_SEMI_BOLD, big},
-                {L" 天", kCjkFont, DWRITE_FONT_WEIGHT_NORMAL, small},
+                {L"还有 ", kCjkFont, DWRITE_FONT_WEIGHT_NORMAL, smallSize},
+                {num, kDigitFont, DWRITE_FONT_WEIGHT_SEMI_BOLD, bigSize},
+                {L" 天", kCjkFont, DWRITE_FONT_WEIGHT_NORMAL, smallSize},
             };
             DrawMain(rt.Get(), runs, 3, mainBox, numBr.Get(), shadow.Get(), shadowOffset);
         } else {
