@@ -1,0 +1,50 @@
+#pragma code_page(65001)
+#include <windows.h>
+#include <commctrl.h>
+#include "../src/resource.h"
+
+IDI_APP ICON "app.ico"
+
+// 1 = CREATEPROCESS_MANIFEST_RESOURCE_ID, 24 = RT_MANIFEST
+1 24 "app.manifest"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEOS 0x40004
+FILETYPE 0x1
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080404b0"
+    BEGIN
+      VALUE "FileDescription", "倒计日桌面卡片"
+      VALUE "FileVersion", "1.0.0"
+      VALUE "ProductName", "CountDay"
+      VALUE "ProductVersion", "1.0.0"
+      VALUE "OriginalFilename", "CountDay.exe"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x804, 1200
+  END
+END
+
+IDD_EDIT DIALOGEX 0, 0, 232, 138
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "倒计日"
+FONT 9, "Microsoft YaHei UI", 400, 0, 0x86
+BEGIN
+    LTEXT           "标题", -1, 10, 13, 42, 10
+    EDITTEXT        IDC_TITLE, 56, 11, 166, 14, ES_AUTOHSCROLL
+    LTEXT           "目标日期", -1, 10, 33, 42, 10
+    CONTROL         "", IDC_DATE, "SysDateTimePick32", DTS_LONGDATEFORMAT | WS_TABSTOP, 56, 31, 166, 14
+    CONTROL         "每年重复（生日、纪念日等）", IDC_REPEAT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 56, 51, 166, 12
+    LTEXT           "配色", -1, 10, 72, 42, 10
+    COMBOBOX        IDC_THEME, 56, 70, 166, 140, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "不透明度", -1, 10, 92, 42, 10
+    COMBOBOX        IDC_OPACITY, 56, 90, 166, 140, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "确定", IDOK, 118, 114, 50, 15
+    PUSHBUTTON      "取消", IDCANCEL, 172, 114, 50, 15
+END
