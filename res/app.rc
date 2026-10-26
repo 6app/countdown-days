@@ -9,8 +9,8 @@ IDI_APP ICON "app.ico"
 1 24 "app.manifest"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,0,0,0
-PRODUCTVERSION 1,0,0,0
+FILEVERSION 1,0,1,0
+PRODUCTVERSION 1,0,1,0
 FILEOS 0x40004
 FILETYPE 0x1
 BEGIN
@@ -19,9 +19,9 @@ BEGIN
     BLOCK "080404b0"
     BEGIN
       VALUE "FileDescription", "倒计日桌面卡片"
-      VALUE "FileVersion", "1.0.0"
+      VALUE "FileVersion", "1.0.1"
       VALUE "ProductName", "CountDay"
-      VALUE "ProductVersion", "1.0.0"
+      VALUE "ProductVersion", "1.0.1"
       VALUE "OriginalFilename", "CountDay.exe"
     END
   END

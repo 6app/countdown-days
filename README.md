@@ -9,7 +9,10 @@
 
 ## 下载
 
-在 [Releases](https://github.com/6app/countdown-days/releases) 页面下载 `CountDay.exe`，双击即可运行。
+在 [Releases](https://github.com/6app/countdown-days/releases) 页面下载：
+
+- **安装包** `CountDay-Setup-v*.exe`：双击后点「安装」即可。安装到 `%LOCALAPPDATA%\Programs\CountDay`，不需要管理员权限，装完自动启动并开机自启，可在「设置 → 应用」里卸载
+- **便携版** `CountDay-portable.exe`：单个文件，双击即可运行
 
 ## 使用
 
@@ -41,9 +44,11 @@ cmake --build build --config MinSizeRel
 LLVM_MINGW=/path/to/llvm-mingw sh tools/build_mingw.sh
 ```
 
-产物是 `build-mingw/CountDay.exe`。
+产物是 `build-mingw/CountDay.exe`。修改图标的话，执行 `python3 tools/make_icon.py` 重新生成 `res/app.ico`。
 
-**发布新版本**：推送 `v*` 标签（如 `git tag v1.0.1 && git push origin v1.0.1`），GitHub Actions 会在 Windows 上用 MSVC 编译，然后自动创建 Release 并上传 exe。说明文字取自 `.github/release-notes.md`。修改图标的话，执行 `python3 tools/make_icon.py` 重新生成 `res/app.ico`。
+**安装包**：安装脚本是 `installer/CountDay.iss`（Inno Setup 6）。中文界面文件 `installer/ChineseSimplified.isl` 取自 Inno Setup 官方仓库。
+
+**持续集成和发布**：每次推送到 `main`，GitHub Actions 都会在 Windows 上用 MSVC 编译、打安装包并做启动测试。推送 `v*` 标签（如 `git tag v1.0.2 && git push origin v1.0.2`）时，还会自动创建 Release，上传安装包和便携版。Release 的说明文字取自 `.github/release-notes.md`。
 
 ## 实现要点
 

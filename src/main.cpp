@@ -355,7 +355,11 @@ LRESULT CALLBACK MainProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             return TRUE;
 
         case WM_ENDSESSION:
-            if (wp) SaveNow();
+            if (wp) {
+                SaveNow();
+                // 安装器（重启管理器）要求关闭程序以便替换文件
+                if (lp & ENDSESSION_CLOSEAPP) DestroyWindow(hwnd);
+            }
             return 0;
 
         case WM_DESTROY:
