@@ -15,7 +15,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Version
         id: ver
@@ -25,11 +25,19 @@ jobs:
           "version=$v" >> $env:GITHUB_OUTPUT
           Write-Host "version: $v"
 
+      # 不指定生成器版本：用构建机上装的 Visual Studio
+      # 输出同时写入 ci.log，失败时摘要会作为公开的注释显示（不登录也能看到）
       - name: Configure
-        run: cmake -B build -G "Visual Studio 17 2022" -A x64
+        shell: pwsh
+        run: |
+          cmake -B build -A x64 *>&1 | Tee-Object -FilePath ci.log -Append
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Build
-        run: cmake --build build --config MinSizeRel
+        shell: pwsh
+        run: |
+          cmake --build build --config MinSizeRel *>&1 | Tee-Object -FilePath ci.log -Append
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Smoke test
         # 启动程序几秒，确认没有崩溃，且首次运行写出了配置文件
@@ -43,6 +51,7 @@ jobs:
           if (Test-Path $cfg) { Get-Content $cfg } else { Write-Host "config.json not found" }
           $ok = (-not $p.HasExited) -and (Test-Path $cfg)
           if (-not $p.HasExited) { Stop-Process -Id $p.Id -Force }
+          Write-Host "::notice title=Smoke test::running=$(-not $p.HasExited) config=$(Test-Path $cfg) ok=$ok"
           if (-not $ok) { Write-Error "smoke test failed" }
 
       - name: Build installer
@@ -53,10 +62,20 @@ jobs:
             choco install innosetup -y --no-progress
             $iscc = Join-Path ${env:ProgramFiles(x86)} "Inno Setup 6\ISCC.exe"
           }
-          & $iscc "/DAppVersion=${{ steps.ver.outputs.version }}" "/DSourceExe=..\build\MinSizeRel\CountDay.exe" installer\CountDay.iss
+          & $iscc "/DAppVersion=${{ steps.ver.outputs.version }}" "/DSourceExe=..\build\MinSizeRel\CountDay.exe" installer\CountDay.iss *>&1 | Tee-Object -FilePath ci.log -Append
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Copy-Item build/MinSizeRel/CountDay.exe dist/CountDay-portable.exe
           Get-ChildItem dist | Format-Table Name, Length
+
+      - name: Report errors
+        if: failure()
+        shell: pwsh
+        run: |
+          if (-not (Test-Path ci.log)) { Write-Host "::error title=CI::no ci.log"; exit 0 }
+          $hits = Get-Content ci.log | Where-Object { $_ -match '(?i)error|warning C|fatal|not found|cannot' } | Select-Object -First 25
+          if (-not $hits) { $hits = Get-Content ci.log -Tail 25 }
+          $msg = ($hits | ForEach-Object { $_.Trim() }) -join '%0A'
+          Write-Host "::error title=CI log::$msg"
 
       - uses: actions/upload-artifact@v4
         with:
