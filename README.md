@@ -1,74 +1,99 @@
 # 倒计日 CountDay
 
-嵌入 Windows 桌面的倒数日卡片。卡片放在桌面图标层，永远在其他窗口下方，按 Win+D 也不会消失。
-主要面向 Win10 和 4K 高缩放屏幕。
+嵌入 Windows 桌面的倒数日卡片。把重要的日子做成卡片放在桌面上，抬眼就能看到还剩几天。主要面向 Win10 和 4K 高分辨率屏幕。
 
-- 单个 exe，约 400 KB，不需要安装任何运行库
-- 空闲时 CPU 为 0：只在本地零点、修改系统时间、睡眠唤醒、解锁时重绘一次
-- 每显示器 DPI 感知（PerMonitorV2），150%/200% 缩放下文字清晰，多屏可用
+## 功能
+
+### 嵌在桌面上的卡片
+- 卡片和桌面图标在同一层，永远在其他窗口下方，不会挡住正在用的程序
+- 按 Win+D 显示桌面时，卡片照样在
+- 不出现在任务栏和 Alt+Tab 里，也不会抢走键盘焦点
+- 资源管理器崩溃或重启后，卡片自动回到桌面
+
+### 位置和大小随意调整
+- 拖动卡片可以移动，拖边缘或右下角的手柄可以缩放
+- 靠近屏幕边缘时自动吸附对齐，按住 Alt 拖动可关闭吸附
+- 调整好后锁定，避免误拖；解锁时卡片显示虚线框，一眼就能分清
+- 可以同时放多张卡片，每张的位置和大小都单独记住
+- 多显示器可用；拔掉显示器或改了分辨率后，卡片会自动移回可见区域
+
+### 日期计算
+- 显示「还有 N 天」，当天显示「就是今天」，过期的显示「已到期」
+- 每年重复：生日、纪念日过了以后，自动算到下一年
+- 2 月 29 日的纪念日在平年按 2 月 28 日算
+- 每天零点自动更新；修改系统时间、电脑睡眠唤醒、解锁屏幕后也会立即更新
+
+### 外观
+- 7 种配色：墨夜、雪白、晴空蓝、樱桃红、森林绿、暮光紫、琥珀橙
+- 背景不透明度可调，最低可以只显示文字；背景很透明时，文字自动加阴影，在任何壁纸上都看得清
+- 文字大小随卡片尺寸自动缩放，数字位数多了会自动缩小，不会溢出
+- 适配 4K 屏和 150%/200% 缩放，文字清晰不发虚；托盘图标、菜单、对话框都按缩放比例显示
+
+### 轻量省资源
+- 平时 CPU 占用为 0，没有任何定时轮询，只在日期变化时重绘一次
+- 绘制完立即释放图像缓存，空闲时把不用的内存交还给系统
+- 程序本体不到 500 KB，不需要安装任何运行库
+
+### 安装和配置
+- 一键安装：不需要管理员权限，装完自动启动并设为开机自启
+- 也提供便携版，单个文件双击即可运行
+- 开机自启可以在托盘菜单里随时开关
+- 卡片配置自动保存，卸载后重装卡片还在；便携版可以把配置放在 exe 旁边，整个文件夹带走就能用
 
 ## 下载
 
 在 [Releases](https://github.com/6app/countdown-days/releases) 页面下载：
 
-- **安装包** `CountDay-Setup-v*.exe`：双击后点「安装」即可。安装到 `%LOCALAPPDATA%\Programs\CountDay`，不需要管理员权限，装完自动启动并开机自启，可在「设置 → 应用」里卸载
+- **安装包** `CountDay-Setup-v*.exe`：双击后点「安装」即可。安装位置是 `%LOCALAPPDATA%\Programs\CountDay`，可以在「设置 → 应用」里卸载
 - **便携版** `CountDay-portable.exe`：单个文件，双击即可运行
+
+系统要求：Windows 10 或更高版本，64 位。
 
 ## 使用
 
 | 操作 | 方式 |
 |---|---|
 | 新建卡片 | 托盘菜单或卡片右键菜单 →「新建倒计日」 |
-| 编辑 | 双击卡片，或右键 →「编辑」 |
-| 换配色、调不透明度 | 卡片右键菜单 |
-| 移动 / 调整大小 | 托盘菜单取消勾选「锁定位置和大小」后，拖动卡片移动，拖边缘或右下角缩放；靠近屏幕边缘会自动吸附，按住 Alt 可关闭吸附 |
-| 开机自启 | 托盘菜单 →「开机自动启动」（写入当前用户的 Run 注册表项） |
+| 编辑标题、日期 | 双击卡片，或右键 →「编辑」 |
+| 换配色、调不透明度 | 卡片右键菜单，或在编辑窗口里选择 |
+| 移动 / 调整大小 | 托盘菜单里取消勾选「锁定位置和大小」，然后拖动卡片或拖边角 |
+| 删除卡片 | 卡片右键菜单 →「删除」 |
+| 开机自启 | 托盘菜单 →「开机自动启动」 |
 
-日期没到时显示「还有 N 天」，当天显示「就是今天」，非重复卡片过期后显示「已到期」。
-勾选「每年重复」后，过了目标日会自动算到下一年；2 月 29 日在平年按 2 月 28 日算。
+配置文件在 `%APPDATA%\CountDay\config.json`。如果 exe 同目录下有 `config.json`，就改用这个文件（便携模式）。
 
-配置保存在 `%APPDATA%\CountDay\config.json`。如果 exe 同目录下有 `config.json`，就改用这个文件（便携模式）。
+## 开发
 
-## 构建
+### 构建
 
-**Windows（Visual Studio 2019+）**
+**Windows（Visual Studio 2019 或更高版本）**
 
 ```bat
-cmake -B build -G "Visual Studio 17 2022" -A x64
+cmake -B build -A x64
 cmake --build build --config MinSizeRel
 ```
 
-**macOS / Linux 交叉编译**（用 [llvm-mingw](https://github.com/mstorsjo/llvm-mingw)）
+**macOS / Linux 交叉编译**（使用 [llvm-mingw](https://github.com/mstorsjo/llvm-mingw)）
 
 ```bash
 LLVM_MINGW=/path/to/llvm-mingw sh tools/build_mingw.sh
 ```
 
-产物是 `build-mingw/CountDay.exe`。修改图标的话，执行 `python3 tools/make_icon.py` 重新生成 `res/app.ico`。
+- 安装包脚本是 `installer/CountDay.iss`（Inno Setup 6）
+- 修改图标后，执行 `python3 tools/make_icon.py` 重新生成 `res/app.ico`
 
-**安装包**：安装脚本是 `installer/CountDay.iss`（Inno Setup 6）。中文界面文件 `installer/ChineseSimplified.isl` 取自 Inno Setup 官方仓库。
+### 发布
 
-**持续集成和发布**：每次推送到 `main`，GitHub Actions 都会在 Windows 上用 MSVC 编译、打安装包并做启动测试。推送 `v*` 标签（如 `git tag v1.0.2 && git push origin v1.0.2`）时，还会自动创建 Release，上传安装包和便携版。Release 的说明文字取自 `.github/release-notes.md`。
+每次推送到 `main`，GitHub Actions 都会在 Windows 上编译、打安装包并做启动测试。推送 `v*` 标签（如 `v1.0.2`）时，会自动创建 Release 并上传安装包和便携版，说明文字取自 `.github/release-notes.md`。
 
-## 实现要点
+### 代码结构
 
 | 文件 | 职责 |
 |---|---|
-| `src/desktop_host.cpp` | 找到桌面的 `SHELLDLL_DefView`（在 Progman 或 WorkerW 下），卡片作为它的子窗口 |
-| `src/card.cpp` | 分层子窗口：拖动/缩放、吸附、右键菜单、显示器变化后的位置修正 |
-| `src/renderer.cpp` | Direct2D（软件模式）+ DirectWrite 绘制到 DIB，再用 `UpdateLayeredWindow` 提交；画完立即释放位图 |
+| `src/desktop_host.cpp` | 找到桌面图标层窗口，把卡片嵌进去 |
+| `src/card.cpp` | 卡片窗口：拖动、缩放、吸附、右键菜单 |
+| `src/renderer.cpp` | 用 Direct2D 和 DirectWrite 绘制卡片 |
 | `src/daycalc.cpp` | 天数计算、每年重复、零点定时 |
-| `src/main.cpp` | 隐藏主窗口：托盘、定时器、系统广播（`TaskbarCreated`、时间变化、电源、解锁） |
-| `src/config.cpp` | JSON 配置读写（内置小解析器），先写临时文件再替换 |
-
-- **资源管理器重启**：桌面窗口被销毁时，卡片会一起销毁。程序收到 `TaskbarCreated` 或发现卡片被销毁后，会重新找桌面并重建卡片。
-- **退化模式**：启动后 30 秒内一直找不到桌面窗口时，卡片改成置底的普通顶层窗口。这种模式下 Win+D 会把卡片隐藏。
-- 分层子窗口需要在清单里声明 Win8+ 兼容（见 `res/app.manifest`）。删掉这一项后子窗口会创建失败，卡片只能退化成置底的顶层窗口。
-
-## 需要在真机上验证的点
-
-1. 4K 屏 150% / 200% 缩放下的文字清晰度和默认尺寸
-2. Win+D、资源管理器重启（任务管理器里重启 Windows 资源管理器）之后卡片是否还在
-3. 多显示器、拔插显示器之后的位置
-4. 桌面右键 →「查看」→ 取消「显示桌面图标」时，卡片会跟图标一起隐藏（这是预期行为）
-5. 装了 Wallpaper Engine 之类的动态壁纸软件时，卡片是否仍在图标层上方
+| `src/main.cpp` | 托盘、定时器、系统事件 |
+| `src/config.cpp` | 配置读写 |
+| `src/edit_dialog.cpp` | 新建和编辑卡片的对话框 |
